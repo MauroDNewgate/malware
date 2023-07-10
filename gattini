@@ -1,0 +1,40 @@
+#definisco le variabili
+$Data= Get-Date -Format "ddMMyyyy"
+$condition = Test-Path -Path C:\Windows\Temp\ServiziDisabilitati.csv -PathType Leaf
+$condition2 = Test-Path -Path C:\Windows\Temp\Archivio -PathType Container
+$formatnome= "ServiziDisabilitati-" + $Data
+$services= Get-Service SERVICE* | where-object {$_.StartType -ne "Disabled"}
+
+
+#permetto l'esecuzione dello script permettendo il bypass delle policy di esecuzioni
+
+Set-ExecutionPolicy bypass -Confirm
+#prendo i processi disabilitati
+#definisco le variabili
+
+
+
+
+
+if ( $condition ) 
+
+{ if ( $condition2)
+
+ { $services | Export-Csv -Path "C:\Windows\Temp\Archivio\$formatnome.csv"
+
+  } else  { New-Item -Path "C:\Windows\Temp\Archivio"
+  
+$services | Export-Csv -Path "C:\Windows\Temp\Archivio\$formatnome.csv"
+
+ }  } else { $services | Export-Csv -Path "C:\Windows\Temp\ServiziDisabilitati.csv"
+ }
+
+
+
+ Function log {
+ $Hesecuz = Get-Date
+ $servdis = Get-Service | Where-Object {$_.Status -eq "Disabled"}
+ $output = "Ora esecuzione: $Hesecuz e numero processi: $servdis"
+ New-Item -Path C:\Windows\Temp\serviziTTF.log -ItemType file
+ $output | Out-File -FilePath 
+ }
